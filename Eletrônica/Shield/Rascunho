@@ -1,0 +1,33 @@
+###########
+Sensor
+##########
+
+GND
+5V
+X
+Y
+12V
+DATA
+
+###########
+Shield
+###########
+
+12* Analog In
+
+6* DataOut
+
+6* 12V
+6* 5V
+6* GND
+
+
+############
+Material
+############
+
+30m Cabo 6 vias blindado
+2 Fontes 12V
+
+
+
