@@ -22,6 +22,6 @@ void loop()
   // Delay == Bad! Set up an interrupt based timer instead 
   // (or something like Blink Without Delay)
   delay(1000); 
-digitalWrite(13, LOW);
-delay(1000); 
+  digitalWrite(13, LOW);
+  delay(1000); 
 }
