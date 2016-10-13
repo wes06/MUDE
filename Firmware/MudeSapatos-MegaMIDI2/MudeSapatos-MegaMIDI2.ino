@@ -12,55 +12,50 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 #define NUMPIXELS      4
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ400);
 
-
+uint32_t colorOn = 0xFFFFFFFF;
 
 uint32_t cOn[6][4] = {
+
   {
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
+    0x0000FFFF,
+    0x0000FFFF,
+    0x0000FFFF,
+    0x0000FFFF
   },
-  {
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF
+  { // jacaré
+    0x00DFFF05,
+    0x00DFFF05,
+    0x00DFFF05,
+    0x00DFFF05
   },
-  {
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF
+  { // branco
+    0x0096FF32,
+    0x0096FF32,
+    0x0096FF32,
+    0x0096FF32
   },
-  {
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF
+  { // branco
+    0x0096FF32,
+    0x0096FF32,
+    0x0096FF32,
+    0x0096FF32
   },
-  {
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF
+  { // 0 255 255
+    0x00FF00FF,
+    0x0020FF40,
+    0x0020FF40,
+    0x0020FF40
   },
-  {
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF,
-    0xFFFFFFFF
+  { // ursinho
+    0x0000FFFF,
+    0x00FF00FF,
+    0x00FFFF00,
+    0x000000FF
   },
+
 };
 
-uint32_t cOff[] = {
-  0x05050505,
-  0x05050505,
-  0x05050505,
-  0x05050505,
-  0x05050505,
-  0x05050505
-};
+uint32_t cOff = 0x00040802; //    0x0096FF32
 
 int analogPorts[]       = { A0, A2, A4, A8, A10, A12 };
 
@@ -74,8 +69,8 @@ float thresholdAnalog[] = { zTh, zTh, zTh, zTh, zTh, zTh };
 int   debounceTimeMax   = 100;
 int   debounceMillis[]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-int   debounceLEDTimeMax   = 150;
-int   debounceLedMillis[]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+int   debounceLEDTimeMax   = 130;
+int   debounceLedMillis  = 0;
 
 int   midiTargetNotes[] = { 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
 
@@ -108,21 +103,24 @@ void loop()
   int deltaMillis = abs(currentMillis - lastMillis);
   lastMillis = currentMillis;
 
+
+  debounceLedMillis = max(0, debounceLedMillis - deltaMillis);
+  
   for (int i = 0; i < ANALOGPORTS; i++)
   {
     int currentRead = analogRead(analogPorts[i]);
     lowPassAnalog[i] = lowPassAnalog[i] * (1 - sensitivityAnalog) + sensitivityAnalog * currentRead;
     debounceMillis[i] = max(0, debounceMillis[i] - deltaMillis);
-    debounceLedMillis[i] = max(0, debounceLedMillis[i] - deltaMillis);
+    
 
     if (abs(lowPassAnalog[i] - currentRead) > thresholdAnalog[i] && debounceMillis[i] == 0)
     {
       midiTargetVeloc[i] = LOUD;
       debounceMillis[i] = debounceTimeMax;
-      debounceLedMillis[i] = debounceLEDTimeMax;
+      debounceLedMillis = debounceLEDTimeMax;
 
-      for (int j = 0; j < NUMPIXELS; j++) {
-        pixels.setPixelColor(j, cOn[i][j]);
+      for(int j = 0; j < NUMPIXELS; j++){
+        pixels. setPixelColor(j, cOn[i][j]);
       }
       digitalWrite(13, HIGH);
     }
@@ -131,9 +129,9 @@ void loop()
       midiTargetVeloc[i] = MUTE;
     }
 
-    if (debounceLedMillis[i] == 0) {
+    if (debounceLedMillis == 0) {
       for (int j = 0; j < NUMPIXELS; j++) {
-        pixels.setPixelColor(j, cOff[i]);
+        pixels.setPixelColor(j, cOff);
       }
       digitalWrite(13, LOW);
     }
@@ -149,11 +147,11 @@ void loop()
 }
 
 void noteOn(int cmd, int pitch, int velocity) {
-  //  Serial.print("\t");
-  //  Serial.print(pitch);
-  //  Serial.print(":\t");
-  //  Serial.print(velocity);
-  //  Serial.print("\r\n");
+  //Serial.print("\t");
+  //Serial.print(pitch);
+  //Serial.print(":\t");
+  //Serial.print(velocity);
+  //Serial.print("\r\n");
 
   //Serial.write(cmd);
   //Serial.write(pitch);
