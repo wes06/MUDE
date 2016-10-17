@@ -64,7 +64,7 @@ float sensitivityAnalog = 0.5f;
 
 float yTh = 0.15f;
 float zTh = 50;
-float thresholdAnalog[] = { zTh, 1.15*zTh, 1.3*zTh, 1.1*zTh, 1.2*zTh, 1.3*zTh };
+float thresholdAnalog[] = { zTh, 1.4*zTh, 1.2*zTh, 1.1*zTh, 1.4*zTh, 1.3*zTh };
 
 int   debounceTimeMax   = 100;
 int   debounceMillis[]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
